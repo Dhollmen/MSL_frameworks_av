@@ -58,8 +58,8 @@ status_t EffectDescriptorCollection::registerEffect(const effect_descriptor_t *d
 {
     Mutex::Autolock _l(mLock);
     if (mTotalEffectsMemory + desc->memoryUsage > getMaxEffectsMemory()) {
-        ALOGW("registerEffect() memory limit exceeded for Fx %s, Memory %d KB",
-                desc->name, desc->memoryUsage);
+        //ALOGW("registerEffect() memory limit exceeded for Fx %s, Memory %d KB",
+        //        desc->name, desc->memoryUsage);
         return INVALID_OPERATION;
     }
     mTotalEffectsMemory += desc->memoryUsage;
@@ -84,7 +84,7 @@ status_t EffectDescriptorCollection::unregisterEffect(int id)
     Mutex::Autolock _l(mLock);
     ssize_t index = indexOfKey(id);
     if (index < 0) {
-        ALOGW("unregisterEffect() unknown effect ID %d", id);
+        //ALOGW("unregisterEffect() unknown effect ID %d", id);
         return INVALID_OPERATION;
     }
 
@@ -93,8 +93,8 @@ status_t EffectDescriptorCollection::unregisterEffect(int id)
     setEffectEnabled(effectDesc, false);
 
     if (mTotalEffectsMemory < effectDesc->mDesc.memoryUsage) {
-        ALOGW("unregisterEffect() memory %d too big for total %d",
-                effectDesc->mDesc.memoryUsage, mTotalEffectsMemory);
+        //ALOGW("unregisterEffect() memory %d too big for total %d",
+        //        effectDesc->mDesc.memoryUsage, mTotalEffectsMemory);
         effectDesc->mDesc.memoryUsage = mTotalEffectsMemory;
     }
     mTotalEffectsMemory -= effectDesc->mDesc.memoryUsage;
@@ -111,7 +111,7 @@ status_t EffectDescriptorCollection::setEffectEnabled(int id, bool enabled)
     Mutex::Autolock _l(mLock);
     ssize_t index = indexOfKey(id);
     if (index < 0) {
-        ALOGW("unregisterEffect() unknown effect ID %d", id);
+        //ALOGW("unregisterEffect() unknown effect ID %d", id);
         return INVALID_OPERATION;
     }
 
@@ -130,16 +130,16 @@ status_t EffectDescriptorCollection::setEffectEnabled(const sp<EffectDescriptor>
 
     if (enabled) {
         if (mTotalEffectsCpuLoad + effectDesc->mDesc.cpuLoad > getMaxEffectsCpuLoad()) {
-            ALOGW("setEffectEnabled(true) CPU Load limit exceeded for Fx %s, CPU %f MIPS",
-                 effectDesc->mDesc.name, (float)effectDesc->mDesc.cpuLoad/10);
+            //ALOGW("setEffectEnabled(true) CPU Load limit exceeded for Fx %s, CPU %f MIPS",
+            //     effectDesc->mDesc.name, (float)effectDesc->mDesc.cpuLoad/10);
             return INVALID_OPERATION;
         }
         mTotalEffectsCpuLoad += effectDesc->mDesc.cpuLoad;
         ALOGV("setEffectEnabled(true) total CPU %d", mTotalEffectsCpuLoad);
     } else {
         if (mTotalEffectsCpuLoad < effectDesc->mDesc.cpuLoad) {
-            ALOGW("setEffectEnabled(false) CPU load %d too high for total %d",
-                    effectDesc->mDesc.cpuLoad, mTotalEffectsCpuLoad);
+            //ALOGW("setEffectEnabled(false) CPU load %d too high for total %d",
+            //        effectDesc->mDesc.cpuLoad, mTotalEffectsCpuLoad);
             effectDesc->mDesc.cpuLoad = mTotalEffectsCpuLoad;
         }
         mTotalEffectsCpuLoad -= effectDesc->mDesc.cpuLoad;
