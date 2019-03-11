@@ -50,7 +50,7 @@ NuPlayerDriver::NuPlayerDriver(pid_t pid)
       mLooping(false),
       mAutoLoop(false),
       mStartupSeekTimeUs(-1) {
-    ALOGV("NuPlayerDriver(%p)", this);
+    //ALOGV("NuPlayerDriver(%p)", this);
     mLooper->setName("NuPlayerDriver Looper");
 
     mLooper->start(
@@ -65,7 +65,7 @@ NuPlayerDriver::NuPlayerDriver(pid_t pid)
 }
 
 NuPlayerDriver::~NuPlayerDriver() {
-    ALOGV("~NuPlayerDriver(%p)", this);
+    //ALOGV("~NuPlayerDriver(%p)", this);
     mLooper->stop();
 }
 
@@ -83,7 +83,7 @@ status_t NuPlayerDriver::setDataSource(
         const sp<IMediaHTTPService> &httpService,
         const char *url,
         const KeyedVector<String8, String8> *headers) {
-    ALOGV("setDataSource(%p) url(%s)", this, uriDebugString(url, false).c_str());
+    //ALOGV("setDataSource(%p) url(%s)", this, uriDebugString(url, false).c_str());
     Mutex::Autolock autoLock(mLock);
 
     if (mState != STATE_IDLE) {
@@ -102,7 +102,7 @@ status_t NuPlayerDriver::setDataSource(
 }
 
 status_t NuPlayerDriver::setDataSource(int fd, int64_t offset, int64_t length) {
-    ALOGV("setDataSource(%p) file(%d)", this, fd);
+    //ALOGV("setDataSource(%p) file(%d)", this, fd);
     Mutex::Autolock autoLock(mLock);
 
     if (mState != STATE_IDLE) {
@@ -122,7 +122,7 @@ status_t NuPlayerDriver::setDataSource(int fd, int64_t offset, int64_t length) {
 }
 
 status_t NuPlayerDriver::setDataSource(const sp<IStreamSource> &source) {
-    ALOGV("setDataSource(%p) stream source", this);
+    //ALOGV("setDataSource(%p) stream source", this);
     Mutex::Autolock autoLock(mLock);
 
     if (mState != STATE_IDLE) {
@@ -141,7 +141,7 @@ status_t NuPlayerDriver::setDataSource(const sp<IStreamSource> &source) {
 }
 
 status_t NuPlayerDriver::setDataSource(const sp<DataSource> &source) {
-    ALOGV("setDataSource(%p) callback source", this);
+    //ALOGV("setDataSource(%p) callback source", this);
     Mutex::Autolock autoLock(mLock);
 
     if (mState != STATE_IDLE) {
@@ -161,7 +161,7 @@ status_t NuPlayerDriver::setDataSource(const sp<DataSource> &source) {
 
 status_t NuPlayerDriver::setVideoSurfaceTexture(
         const sp<IGraphicBufferProducer> &bufferProducer) {
-    ALOGV("setVideoSurfaceTexture(%p)", this);
+    //ALOGV("setVideoSurfaceTexture(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     if (mSetSurfaceInProgress) {
@@ -189,7 +189,7 @@ status_t NuPlayerDriver::setVideoSurfaceTexture(
 }
 
 status_t NuPlayerDriver::prepare() {
-    ALOGV("prepare(%p)", this);
+    //ALOGV("prepare(%p)", this);
     Mutex::Autolock autoLock(mLock);
     return prepare_l();
 }
@@ -224,7 +224,7 @@ status_t NuPlayerDriver::prepare_l() {
 }
 
 status_t NuPlayerDriver::prepareAsync() {
-    ALOGV("prepareAsync(%p)", this);
+    //ALOGV("prepareAsync(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     switch (mState) {
@@ -246,7 +246,7 @@ status_t NuPlayerDriver::prepareAsync() {
 }
 
 status_t NuPlayerDriver::start() {
-    ALOGD("start(%p), state is %d, eos is %d", this, mState, mAtEOS);
+    //ALOGD("start(%p), state is %d, eos is %d", this, mState, mAtEOS);
     Mutex::Autolock autoLock(mLock);
 
     switch (mState) {
@@ -306,7 +306,7 @@ status_t NuPlayerDriver::start() {
 }
 
 status_t NuPlayerDriver::stop() {
-    ALOGD("stop(%p)", this);
+    //ALOGD("stop(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     switch (mState) {
@@ -394,7 +394,7 @@ status_t NuPlayerDriver::getSyncSettings(AVSyncSettings *sync, float *videoFps) 
 }
 
 status_t NuPlayerDriver::seekTo(int msec) {
-    ALOGD("seekTo(%p) %d ms", this, msec);
+    //ALOGD("seekTo(%p) %d ms", this, msec);
     Mutex::Autolock autoLock(mLock);
 
     int64_t seekTimeUs = msec * 1000ll;
@@ -465,7 +465,7 @@ status_t NuPlayerDriver::getDuration(int *msec) {
 }
 
 status_t NuPlayerDriver::reset() {
-    ALOGD("reset(%p)", this);
+    //ALOGD("reset(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     switch (mState) {
@@ -620,7 +620,7 @@ status_t NuPlayerDriver::getMetadata(
 }
 
 void NuPlayerDriver::notifyResetComplete() {
-    ALOGD("notifyResetComplete(%p)", this);
+    //ALOGD("notifyResetComplete(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     CHECK_EQ(mState, STATE_RESET_IN_PROGRESS);
@@ -629,7 +629,7 @@ void NuPlayerDriver::notifyResetComplete() {
 }
 
 void NuPlayerDriver::notifySetSurfaceComplete() {
-    ALOGV("notifySetSurfaceComplete(%p)", this);
+    //ALOGV("notifySetSurfaceComplete(%p)", this);
     Mutex::Autolock autoLock(mLock);
 
     CHECK(mSetSurfaceInProgress);
@@ -644,7 +644,7 @@ void NuPlayerDriver::notifyDuration(int64_t durationUs) {
 }
 
 void NuPlayerDriver::notifySeekComplete() {
-    ALOGV("notifySeekComplete(%p)", this);
+    //ALOGV("notifySeekComplete(%p)", this);
     Mutex::Autolock autoLock(mLock);
     mSeekInProgress = false;
     notifySeekComplete_l();
@@ -734,7 +734,7 @@ void NuPlayerDriver::notifyListener(
 
 void NuPlayerDriver::notifyListener_l(
         int msg, int ext1, int ext2, const Parcel *in) {
-    ALOGD("notifyListener_l(%p), (%d, %d, %d)", this, msg, ext1, ext2);
+    //ALOGD("notifyListener_l(%p), (%d, %d, %d)", this, msg, ext1, ext2);
     switch (msg) {
         case MEDIA_PLAYBACK_COMPLETE:
         {
