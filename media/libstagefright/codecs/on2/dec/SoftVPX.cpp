@@ -111,14 +111,14 @@ bool SoftVPX::outputBuffers(bool flushDecoder, bool display, bool eos, bool *por
         // Flush decoder by passing NULL data ptr and 0 size.
         // Ideally, this should never fail.
         if (vpx_codec_decode((vpx_codec_ctx_t *)mCtx, NULL, 0, NULL, 0)) {
-            ALOGE("Failed to flush on2 decoder.");
+            //ALOGE("Failed to flush on2 decoder.");
             return false;
         }
     }
 
     if (!display) {
         if (!flushDecoder) {
-            ALOGE("Invalid operation.");
+            //ALOGE("Invalid operation.");
             return false;
         }
         // Drop all the decoded frames in decoder.
@@ -223,7 +223,7 @@ void SoftVPX::onQueueFilled(OMX_U32 /* portIndex */) {
             if (!outputBuffers(
                      mEOSStatus == INPUT_EOS_SEEN, true /* display */,
                      mEOSStatus == INPUT_EOS_SEEN, &portWillReset)) {
-                ALOGE("on2 decoder failed to output frame.");
+                //ALOGE("on2 decoder failed to output frame.");
                 notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
                 return;
             }
@@ -247,7 +247,7 @@ void SoftVPX::onQueueFilled(OMX_U32 /* portIndex */) {
                               inHeader->pBuffer + inHeader->nOffset,
                               inHeader->nFilledLen,
                               &mTimeStamps[mTimeStampIdx], 0)) {
-            ALOGE("on2 decoder failed to decode frame.");
+            //ALOGE("on2 decoder failed to decode frame.");
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             return;
         }
@@ -255,7 +255,7 @@ void SoftVPX::onQueueFilled(OMX_U32 /* portIndex */) {
 
         if (!outputBuffers(
                  EOSseen /* flushDecoder */, true /* display */, EOSseen, &portWillReset)) {
-            ALOGE("on2 decoder failed to output frame.");
+            //ALOGE("on2 decoder failed to output frame.");
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             return;
         }
@@ -276,7 +276,7 @@ void SoftVPX::onPortFlushCompleted(OMX_U32 portIndex) {
         bool portWillReset = false;
         if (!outputBuffers(
                  true /* flushDecoder */, false /* display */, false /* eos */, &portWillReset)) {
-            ALOGE("Failed to flush decoder.");
+            //ALOGE("Failed to flush decoder.");
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             return;
         }
@@ -288,7 +288,7 @@ void SoftVPX::onReset() {
     bool portWillReset = false;
     if (!outputBuffers(
              true /* flushDecoder */, false /* display */, false /* eos */, &portWillReset)) {
-        ALOGW("Failed to flush decoder. Try to hard reset decoder");
+        //ALOGW("Failed to flush decoder. Try to hard reset decoder");
         destroyDecoder();
         initDecoder();
     }

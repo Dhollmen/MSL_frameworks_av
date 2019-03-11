@@ -382,7 +382,7 @@ static AUDIO_OBJECT_TYPE getAOTFromProfile(OMX_U32 profile) {
     } else if (profile == OMX_AUDIO_AACObjectELD) {
         return AOT_ER_AAC_ELD;
     } else {
-        ALOGW("Unsupported AAC profile - defaulting to AAC-LC");
+        //ALOGW("Unsupported AAC profile - defaulting to AAC-LC");
         return AOT_AAC_LC;
     }
 }
@@ -464,9 +464,9 @@ void SoftAACEncoder2::onQueueFilled(OMX_U32 /* portIndex */) {
         }
 
         OMX_U32 actualBitRate  = aacEncoder_GetParam(mAACEncoder, AACENC_BITRATE);
-        if (mBitRate != actualBitRate) {
-            ALOGW("Requested bitrate %u unsupported, using %u", mBitRate, actualBitRate);
-        }
+        //if (mBitRate != actualBitRate) {
+        //    ALOGW("Requested bitrate %u unsupported, using %u", mBitRate, actualBitRate);
+        //}
 
         AACENC_InfoStruct encInfo;
         if (AACENC_OK != aacEncInfo(mAACEncoder, &encInfo)) {

@@ -168,7 +168,7 @@ void SoftMPEG4::onQueueFilled(OMX_U32 /* portIndex */) {
                     outputBufferWidth(), outputBufferHeight(), mode);
 
             if (!success) {
-                ALOGW("PVInitVideoDecoder failed. Unsupported content?");
+                //ALOGW("PVInitVideoDecoder failed. Unsupported content?");
 
                 notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
                 mSignalledError = true;
@@ -213,8 +213,8 @@ void SoftMPEG4::onQueueFilled(OMX_U32 /* portIndex */) {
             OMX_U32 yFrameSize = sizeof(uint8) * mHandle->size;
             if ((outHeader->nAllocLen < yFrameSize) ||
                     (outHeader->nAllocLen - yFrameSize < yFrameSize / 2)) {
-                ALOGE("Too small output buffer for reference frame: %lu bytes",
-                        (unsigned long)outHeader->nAllocLen);
+                //ALOGE("Too small output buffer for reference frame: %lu bytes",
+                //        (unsigned long)outHeader->nAllocLen);
                 android_errorWriteLog(0x534e4554, "30033990");
                 notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
                 mSignalledError = true;
@@ -241,7 +241,7 @@ void SoftMPEG4::onQueueFilled(OMX_U32 /* portIndex */) {
         OMX_U32 frameSize;
         OMX_U64 yFrameSize = (OMX_U64)mWidth * (OMX_U64)mHeight;
         if (yFrameSize > ((OMX_U64)UINT32_MAX / 3) * 2) {
-            ALOGE("Frame size too large");
+            //ALOGE("Frame size too large");
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             mSignalledError = true;
             return;
@@ -250,7 +250,7 @@ void SoftMPEG4::onQueueFilled(OMX_U32 /* portIndex */) {
 
         if (outHeader->nAllocLen < frameSize) {
             android_errorWriteLog(0x534e4554, "27833616");
-            ALOGE("Insufficient output buffer size");
+            //ALOGE("Insufficient output buffer size");
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             mSignalledError = true;
             return;
@@ -262,7 +262,7 @@ void SoftMPEG4::onQueueFilled(OMX_U32 /* portIndex */) {
                     mHandle, &bitstream, &timestamp, &tmp,
                     &useExtTimestamp,
                     outHeader->pBuffer) != PV_TRUE) {
-            ALOGE("failed to decode video frame.");
+            //ALOGE("failed to decode video frame.");
 
             notify(OMX_EventError, OMX_ErrorUndefined, 0, NULL);
             mSignalledError = true;

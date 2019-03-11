@@ -431,7 +431,7 @@ void SoftAAC2::configureDownmix() const {
     char value[PROPERTY_VALUE_MAX];
     if (!(property_get("media.aac_51_output_enabled", value, NULL)
             && (!strcmp(value, "1") || !strcasecmp(value, "true")))) {
-        ALOGI("limiting to stereo output");
+        //ALOGI("limiting to stereo output");
         aacDecoder_SetParam(mAACDecoder, AAC_PCM_MAX_OUTPUT_CHANNELS, 2);
         // By default, the decoder creates a 5.1 channel downmix signal
         // for seven and eight channel input streams. To enable 6.1 and 7.1 channel output
@@ -578,7 +578,7 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                                          inBufferLength);
 
                 if (decoderErr != AAC_DEC_OK) {
-                    ALOGW("aacDecoder_ConfigRaw decoderErr = 0x%4.4x", decoderErr);
+                    //ALOGW("aacDecoder_ConfigRaw decoderErr = 0x%4.4x", decoderErr);
                     mSignalledError = true;
                     notify(OMX_EventError, OMX_ErrorUndefined, decoderErr, NULL);
                     return;
@@ -598,9 +598,9 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                 // Only send out port settings changed event if both sample rate
                 // and numChannels are valid.
                 if (mStreamInfo->sampleRate && mStreamInfo->numChannels) {
-                    ALOGI("Initially configuring decoder: %d Hz, %d channels",
-                        mStreamInfo->sampleRate,
-                        mStreamInfo->numChannels);
+                    //ALOGI("Initially configuring decoder: %d Hz, %d channels",
+                    //    mStreamInfo->sampleRate,
+                    //    mStreamInfo->numChannels);
 
                     notify(OMX_EventPortSettingsChanged, 1, 0, NULL);
                     mOutputPortSettingsChange = AWAITING_DISABLED;
@@ -727,9 +727,9 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                 }
                 mDecodedSizes.add(numConsumed);
 
-                if (decoderErr != AAC_DEC_OK) {
-                    ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
-                }
+                //if (decoderErr != AAC_DEC_OK) {
+                //    ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
+                //}
 
                 if (bytesValid[0] != 0) {
                     ALOGE("bytesValid[0] != 0 should never happen");
@@ -749,7 +749,7 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                         return;
                     }
                 } else {
-                    ALOGW("AAC decoder returned error 0x%4.4x, substituting silence", decoderErr);
+                    //ALOGW("AAC decoder returned error 0x%4.4x, substituting silence", decoderErr);
 
                     memset(tmpOutBuffer, 0, numOutBytes); // TODO: check for overflow
 
@@ -796,9 +796,9 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                 if (mInputBufferCount <= 2 || mOutputBufferCount > 1) { // TODO: <= 1
                     if (mStreamInfo->sampleRate != prevSampleRate ||
                         mStreamInfo->numChannels != prevNumChannels) {
-                        ALOGI("Reconfiguring decoder: %d->%d Hz, %d->%d channels",
-                              prevSampleRate, mStreamInfo->sampleRate,
-                              prevNumChannels, mStreamInfo->numChannels);
+                        //ALOGI("Reconfiguring decoder: %d->%d Hz, %d->%d channels",
+                        //      prevSampleRate, mStreamInfo->sampleRate,
+                        //      prevNumChannels, mStreamInfo->numChannels);
 
                         notify(OMX_EventPortSettingsChanged, 1, 0, NULL);
                         mOutputPortSettingsChange = AWAITING_DISABLED;
@@ -823,7 +823,7 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                         return;
                     }
                 } else if (!mStreamInfo->sampleRate || !mStreamInfo->numChannels) {
-                    ALOGW("Invalid AAC stream");
+                    //ALOGW("Invalid AAC stream");
                     mSignalledError = true;
                     notify(OMX_EventError, OMX_ErrorUndefined, decoderErr, NULL);
                     return;
@@ -870,9 +870,9 @@ void SoftAAC2::onQueueFilled(OMX_U32 /* portIndex */) {
                                            tmpOutBuffer,
                                            2048 * MAX_CHANNEL_COUNT,
                                            AACDEC_FLUSH);
-                if (decoderErr != AAC_DEC_OK) {
-                    ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
-                }
+                //if (decoderErr != AAC_DEC_OK) {
+                //    ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
+                //}
 
                 int32_t tmpOutBufferSamples = mStreamInfo->frameSize * mStreamInfo->numChannels;
                 if (tmpOutBufferSamples > mOutputDelayCompensated) {
@@ -1047,7 +1047,7 @@ void SoftAAC2::onPortFlushCompleted(OMX_U32 portIndex) {
             }
             int32_t ns = outputDelayRingBufferGetSamples(0, avail);
             if (ns != avail) {
-                ALOGW("not a complete frame of samples available");
+                //ALOGW("not a complete frame of samples available");
                 break;
             }
             mOutputBufferCount++;
@@ -1072,9 +1072,9 @@ void SoftAAC2::drainDecoder() {
                                    tmpOutBuffer,
                                    2048 * MAX_CHANNEL_COUNT,
                                    AACDEC_FLUSH);
-        if (decoderErr != AAC_DEC_OK) {
-            ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
-        }
+        //if (decoderErr != AAC_DEC_OK) {
+        //    ALOGW("aacDecoder_DecodeFrame decoderErr = 0x%4.4x", decoderErr);
+        //}
 
         int32_t tmpOutBufferSamples = mStreamInfo->frameSize * mStreamInfo->numChannels;
         if (tmpOutBufferSamples > mOutputDelayCompensated) {

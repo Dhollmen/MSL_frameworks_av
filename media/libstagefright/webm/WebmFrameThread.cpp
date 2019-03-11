@@ -277,7 +277,7 @@ WebmFrameMediaSourceThread::WebmFrameMediaSourceThread(
             startTimeOffsetUs = kInitialDelayTimeUs;
         }
         mStartTimeUs += startTimeOffsetUs;
-        ALOGI("Start time offset: %" PRId64 " us", startTimeOffsetUs);
+        //ALOGI("Start time offset: %" PRId64 " us", startTimeOffsetUs);
     }
 }
 
@@ -376,12 +376,12 @@ void WebmFrameMediaSourceThread::run() {
             buffer);
         mSink.push(f);
 
-        ALOGV(
-            "%s %s frame at %" PRId64 " size %zu\n",
-            mType == kVideoType ? "video" : "audio",
-            isSync ? "I" : "P",
-            timestampUs * 1000 / mTimeCodeScale,
-            buffer->range_length());
+//         ALOGV(
+//             "%s %s frame at %" PRId64 " size %zu\n",
+//             mType == kVideoType ? "video" : "audio",
+//             isSync ? "I" : "P",
+//             timestampUs * 1000 / mTimeCodeScale,
+//             buffer->range_length());
 
         buffer->release();
         buffer = NULL;
