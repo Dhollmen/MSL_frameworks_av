@@ -590,11 +590,11 @@ AudioFlinger::ThreadBase::~ThreadBase()
 status_t AudioFlinger::ThreadBase::readyToRun()
 {
     status_t status = initCheck();
-    if (status == NO_ERROR) {
-        ALOGI("AudioFlinger's thread %p ready to run", this);
-    } else {
-        ALOGE("No working audio driver found.");
-    }
+//     if (status == NO_ERROR) {
+//         ALOGI("AudioFlinger's thread %p ready to run", this);
+//     } else {
+//         ALOGE("No working audio driver found.");
+//     }
     return status;
 }
 
@@ -734,8 +734,8 @@ void AudioFlinger::ThreadBase::processConfigEvents_l()
             int err = requestPriority(data->mPid, data->mTid, data->mPrio,
                     true /*asynchronous*/);
             if (err != 0) {
-                ALOGW("Policy SCHED_FIFO priority %d is unavailable for pid %d tid %d; error %d",
-                      data->mPrio, data->mPid, data->mTid, err);
+                //ALOGW("Policy SCHED_FIFO priority %d is unavailable for pid %d tid %d; error %d",
+                //      data->mPrio, data->mPid, data->mTid, err);
             }
         } break;
         case CFG_EVENT_IO: {
@@ -981,7 +981,7 @@ void AudioFlinger::ThreadBase::getPowerManager_l() {
         sp<IBinder> binder =
             defaultServiceManager()->checkService(String16("power"));
         if (binder == 0) {
-            ALOGW("Thread %s cannot connect to the power manager service", mThreadName);
+            //ALOGW("Thread %s cannot connect to the power manager service", mThreadName);
         } else {
             mPowerManager = interface_cast<IPowerManager>(binder);
             binder->linkToDeath(mDeathRecipient);
@@ -1017,7 +1017,7 @@ void AudioFlinger::ThreadBase::PMDeathRecipient::binderDied(const wp<IBinder>& w
     if (thread != 0) {
         thread->clearPowerManager();
     }
-    ALOGW("power manager service died !!!");
+    //ALOGW("power manager service died !!!");
 }
 
 void AudioFlinger::ThreadBase::setEffectSuspended(
@@ -1176,7 +1176,7 @@ sp<AudioFlinger::EffectHandle> AudioFlinger::ThreadBase::createEffect_l(
 
     lStatus = initCheck();
     if (lStatus != NO_ERROR) {
-        ALOGW("createEffect_l() Audio driver not initialized.");
+        //ALOGW("createEffect_l() Audio driver not initialized.");
         goto Exit;
     }
 
@@ -1184,8 +1184,8 @@ sp<AudioFlinger::EffectHandle> AudioFlinger::ThreadBase::createEffect_l(
     // mSinkBuffer is not guaranteed to be compatible with effect processing (PCM 16 stereo).
     // Exception: allow effects for Direct PCM
     if (mType == DIRECT && !mIsDirectPcm) {
-        ALOGW("createEffect_l() Cannot add effect %s on Direct output type thread %s",
-                desc->name, mThreadName);
+        //ALOGW("createEffect_l() Cannot add effect %s on Direct output type thread %s",
+        //        desc->name, mThreadName);
         lStatus = BAD_VALUE;
         goto Exit;
     }
@@ -1193,8 +1193,8 @@ sp<AudioFlinger::EffectHandle> AudioFlinger::ThreadBase::createEffect_l(
     // Reject any effect on mixer or duplicating multichannel sinks.
     // TODO: fix both format and multichannel issues with effects.
     if ((mType == MIXER || mType == DUPLICATING) && mChannelCount > FCC_2) {
-        ALOGW("createEffect_l() Cannot add effect %s for multichannel(%d) %s threads",
-                desc->name, mChannelCount, mType == MIXER ? "MIXER" : "DUPLICATING");
+        //ALOGW("createEffect_l() Cannot add effect %s for multichannel(%d) %s threads",
+        //        desc->name, mChannelCount, mType == MIXER ? "MIXER" : "DUPLICATING");
         lStatus = BAD_VALUE;
         goto Exit;
     }
@@ -1214,8 +1214,8 @@ sp<AudioFlinger::EffectHandle> AudioFlinger::ThreadBase::createEffect_l(
         case DUPLICATING:
         case RECORD:
         default:
-            ALOGW("createEffect_l() Cannot add global effect %s on thread %s",
-                    desc->name, mThreadName);
+            //ALOGW("createEffect_l() Cannot add global effect %s on thread %s",
+            //        desc->name, mThreadName);
             lStatus = BAD_VALUE;
             goto Exit;
         }
@@ -1223,8 +1223,8 @@ sp<AudioFlinger::EffectHandle> AudioFlinger::ThreadBase::createEffect_l(
 
     // Only Pre processor effects are allowed on input threads and only on input threads
     if ((mType == RECORD) != ((desc->flags & EFFECT_FLAG_TYPE_MASK) == EFFECT_FLAG_TYPE_PRE_PROC)) {
-        ALOGW("createEffect_l() effect %s (flags %08x) created on wrong thread type %d",
-                desc->name, desc->flags, mType);
+        //ALOGW("createEffect_l() effect %s (flags %08x) created on wrong thread type %d",
+        //        desc->name, desc->flags, mType);
         lStatus = BAD_VALUE;
         goto Exit;
     }
@@ -1351,8 +1351,8 @@ status_t AudioFlinger::ThreadBase::addEffect_l(const sp<EffectModule>& effect)
     ALOGV("addEffect_l() %p chain %p effect %p", this, chain.get(), effect.get());
 
     if (chain->getEffectFromId_l(effect->id()) != 0) {
-        ALOGW("addEffect_l() %p effect %s already present in chain %p",
-                this, effect->desc().name, chain.get());
+        //ALOGW("addEffect_l() %p effect %s already present in chain %p",
+        //        this, effect->desc().name, chain.get());
         return BAD_VALUE;
     }
 
@@ -1396,8 +1396,8 @@ void AudioFlinger::ThreadBase::removeEffect_l(const sp<EffectModule>& effect) {
         if (chain->removeEffect_l(effect) == 0) {
             removeEffectChain_l(chain);
         }
-    } else {
-        ALOGW("removeEffect_l() %p cannot promote chain for effect %p", this, effect.get());
+    //} else {
+    //    ALOGW("removeEffect_l() %p cannot promote chain for effect %p", this, effect.get());
     }
 }
 
@@ -2130,7 +2130,7 @@ int AudioFlinger::PlaybackThread::asyncCallback(stream_callback_event_t event,
         me->drainCallback();
         break;
     default:
-        ALOGW("asyncCallback() unknown event %d", event);
+        //ALOGW("asyncCallback() unknown event %d", event);
         break;
     }
     return 0;
@@ -2168,8 +2168,8 @@ void AudioFlinger::PlaybackThread::readOutputParameters_l()
     mBufferSize = mOutput->stream->common.get_buffer_size(&mOutput->stream->common);
     mFrameCount = mBufferSize / mFrameSize;
     if (mFrameCount & 15) {
-        ALOGW("HAL output buffer size is %u frames but AudioMixer requires multiples of 16 frames",
-                mFrameCount);
+        //ALOGW("HAL output buffer size is %u frames but AudioMixer requires multiples of 16 frames",
+        //        mFrameCount);
     }
 
     if ((mOutput->flags & AUDIO_OUTPUT_FLAG_NON_BLOCKING) &&
@@ -2186,11 +2186,11 @@ void AudioFlinger::PlaybackThread::readOutputParameters_l()
         if (mOutput->stream->pause != NULL) {
             if (mOutput->stream->resume != NULL) {
                 mHwSupportsPause = true;
-            } else {
-                ALOGW("direct output implements pause but not resume");
+            //} else {
+            //    ALOGW("direct output implements pause but not resume");
             }
-        } else if (mOutput->stream->resume != NULL) {
-            ALOGW("direct output implements resume but not pause");
+        //} else if (mOutput->stream->resume != NULL) {
+        //    ALOGW("direct output implements resume but not pause");
         }
     }
     if (!mHwSupportsPause && mOutput->flags & AUDIO_OUTPUT_FLAG_HW_AV_SYNC) {
@@ -2242,8 +2242,8 @@ void AudioFlinger::PlaybackThread::readOutputParameters_l()
     if (mType == MIXER || mType == DUPLICATING) {
         mNormalFrameCount = (mNormalFrameCount + 15) & ~15;
     }
-    ALOGI("HAL output buffer size %u frames, normal sink buffer size %u frames", mFrameCount,
-            mNormalFrameCount);
+    //ALOGI("HAL output buffer size %u frames, normal sink buffer size %u frames", mFrameCount,
+    //        mNormalFrameCount);
 
     // Check if we want to throttle the processing to no more than 2x normal rate
     mThreadThrottle = property_get_bool("af.thread.throttle", true /* default_value */);
@@ -2501,7 +2501,7 @@ ssize_t AudioFlinger::PlaybackThread::threadLoop_write()
         // Direct output and offload threads
 
         if (mUseAsyncWrite) {
-            ALOGW_IF(mWriteAckSequence & 1, "threadLoop_write(): out of sequence write request");
+            //ALOGW_IF(mWriteAckSequence & 1, "threadLoop_write(): out of sequence write request");
             mWriteAckSequence += 2;
             mWriteAckSequence |= 1;
             ALOG_ASSERT(mCallbackThread != 0);
@@ -2530,7 +2530,7 @@ void AudioFlinger::PlaybackThread::threadLoop_drain()
     if (mOutput->stream->drain) {
         ALOGV("draining %s", (mMixerStatus == MIXER_DRAIN_TRACK) ? "early" : "full");
         if (mUseAsyncWrite) {
-            ALOGW_IF(mDrainSequence & 1, "threadLoop_drain(): out of sequence drain request");
+            //ALOGW_IF(mDrainSequence & 1, "threadLoop_drain(): out of sequence drain request");
             mDrainSequence |= 1;
             ALOG_ASSERT(mCallbackThread != 0);
             mCallbackThread->setDraining(mDrainSequence);
@@ -3043,8 +3043,8 @@ bool AudioFlinger::PlaybackThread::threadLoop()
                         mNumDelayedWrites++;
                         if ((now - lastWarning) > kWarningThrottleNs) {
                             ATRACE_NAME("underrun");
-                            ALOGW("write blocked for %llu msecs, %d delayed writes, thread %p",
-                                    ns2ms(delta), mNumDelayedWrites, this);
+                            //ALOGW("write blocked for %llu msecs, %d delayed writes, thread %p",
+                            //        ns2ms(delta), mNumDelayedWrites, this);
                             lastWarning = now;
                         }
                     }
@@ -4025,10 +4025,10 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTrac
                 // Delegate volume control to effect in track effect chain if needed
                 if (chain != 0) {
                     tracksWithEffect++;
-                } else {
-                    ALOGW("prepareTracks_l(): track %d attached to effect but no chain found on "
-                            "session %d",
-                            name, track->sessionId());
+                //} else {
+                //    ALOGW("prepareTracks_l(): track %d attached to effect but no chain found on "
+                //            "session %d",
+                //            name, track->sessionId());
                 }
             }
 
@@ -4245,7 +4245,7 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTrac
                 // No buffers for this track. Give it a few chances to
                 // fill a buffer, then remove it from active list.
                 if (--(track->mRetryCount) <= 0) {
-                    ALOGI("BUFFER TIMEOUT: remove(%d) from active list on thread %p", name, this);
+                    //ALOGI("BUFFER TIMEOUT: remove(%d) from active list on thread %p", name, this);
                     tracksToRemove->add(track);
                     // indicate to client process that the track was disabled because of underrun;
                     // it will then automatically call start() when data is available
@@ -4683,7 +4683,7 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::DirectOutputThread::prep
         }
 
         if (t->isInvalid()) {
-            ALOGW("An invalidated track shouldn't be in active list");
+            //ALOGW("An invalidated track shouldn't be in active list");
             tracksToRemove->add(t);
             continue;
         }
@@ -4815,9 +4815,9 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::DirectOutputThread::prep
                     // it will then automatically call start() when data is available
                     android_atomic_or(CBLK_DISABLED, &cblk->mFlags);
                 } else if (last) {
-                    ALOGW("pause because of UNDERRUN, framesReady = %zu,"
-                            "minFrames = %u, mFormat = %#x",
-                            track->framesReady(), minFrames, mFormat);
+                //    ALOGW("pause because of UNDERRUN, framesReady = %zu,"
+                //            "minFrames = %u, mFormat = %#x",
+                //            track->framesReady(), minFrames, mFormat);
                     mixerStatus = MIXER_TRACKS_ENABLED;
                     if (mHwSupportsPause && !mHwPaused && !mStandby) {
                         doHwPause = true;
@@ -5219,10 +5219,10 @@ AudioFlinger::PlaybackThread::mixer_state AudioFlinger::OffloadThread::prepareTr
         bool last = l.get() == track;
 
         if (track->isInvalid()) {
-            ALOGW("An invalidated track shouldn't be in active list");
+            //ALOGW("An invalidated track shouldn't be in active list");
             tracksToRemove->add(track);
         } else if (track->mState == TrackBase::IDLE) {
-            ALOGW("An idle track shouldn't be in active list");
+            //ALOGW("An idle track shouldn't be in active list");
         } else if (track->isPausing()) {
             track->setPaused();
             if (last) {
@@ -5584,8 +5584,8 @@ bool AudioFlinger::DuplicatingThread::outputsReady(
     for (size_t i = 0; i < outputTracks.size(); i++) {
         sp<ThreadBase> thread = outputTracks[i]->thread().promote();
         if (thread == 0) {
-            ALOGW("DuplicatingThread::outputsReady() could not promote thread on output track %p",
-                    outputTracks[i].get());
+            //ALOGW("DuplicatingThread::outputsReady() could not promote thread on output track %p",
+            //        outputTracks[i].get());
             return false;
         }
         PlaybackThread *playbackThread = (PlaybackThread *)thread.get();
@@ -6107,11 +6107,11 @@ reacquire_wakelock:
                         activeTrack->mFramesToDrop += framesOut;
                         if (activeTrack->mFramesToDrop >= 0 || activeTrack->mSyncStartEvent == 0 ||
                                 activeTrack->mSyncStartEvent->isCancelled()) {
-                            ALOGW("Synced record %s, session %d, trigger session %d",
-                                  (activeTrack->mFramesToDrop >= 0) ? "timed out" : "cancelled",
-                                  activeTrack->sessionId(),
-                                  (activeTrack->mSyncStartEvent != 0) ?
-                                          activeTrack->mSyncStartEvent->triggerSession() : 0);
+                            //ALOGW("Synced record %s, session %d, trigger session %d",
+                            //      (activeTrack->mFramesToDrop >= 0) ? "timed out" : "cancelled",
+                            //      activeTrack->sessionId(),
+                            //      (activeTrack->mSyncStartEvent != 0) ?
+                            //              activeTrack->mSyncStartEvent->triggerSession() : 0);
                             activeTrack->clearSyncStartEvent();
                         }
                     }
@@ -6129,7 +6129,7 @@ reacquire_wakelock:
                     nsecs_t now = systemTime();
                     // FIXME should lastWarning per track?
                     if ((now - lastWarning) > kWarningThrottleNs) {
-                        ALOGW("RecordThread: buffer overflow");
+                        //ALOGW("RecordThread: buffer overflow");
                         lastWarning = now;
                     }
                 }
@@ -7242,7 +7242,7 @@ status_t AudioFlinger::RecordThread::addEffectChain_l(const sp<EffectChain>& cha
 {
     // only one chain per input thread
     if (mEffectChains.size() != 0) {
-        ALOGW("addEffectChain_l() already one chain %p on thread %p", chain.get(), this);
+        //ALOGW("addEffectChain_l() already one chain %p on thread %p", chain.get(), this);
         return INVALID_OPERATION;
     }
     ALOGV("addEffectChain_l() %p on thread %p", chain.get(), this);
@@ -7264,9 +7264,9 @@ status_t AudioFlinger::RecordThread::addEffectChain_l(const sp<EffectChain>& cha
 size_t AudioFlinger::RecordThread::removeEffectChain_l(const sp<EffectChain>& chain)
 {
     ALOGV("removeEffectChain_l() %p from thread %p", chain.get(), this);
-    ALOGW_IF(mEffectChains.size() != 1,
-            "removeEffectChain_l() %p invalid chain size %d on thread %p",
-            chain.get(), mEffectChains.size(), this);
+    //ALOGW_IF(mEffectChains.size() != 1,
+    //        "removeEffectChain_l() %p invalid chain size %d on thread %p",
+    //        chain.get(), mEffectChains.size(), this);
     if (mEffectChains.size() == 1) {
         mEffectChains.removeAt(0);
     }
