@@ -133,13 +133,13 @@ static void reportStats() {
     int32_t time = (ALooper::GetNowUs() / 1000);
     if (time / 1000 != gLastChecked / 1000) {
         gLastChecked = time;
-        ALOGI("called findItemIx %zu times (for len=%.1f i=%.1f/%.1f mem) dup %zu times (for len=%.1f)",
-                gFindItemCalls,
-                gAverageNumItems / (float)gFindItemCalls,
-                gAverageNumChecks / (float)gFindItemCalls,
-                gAverageNumMemChecks / (float)gFindItemCalls,
-                gDupCalls,
-                gAverageDupItems / (float)gDupCalls);
+//         ALOGI("called findItemIx %zu times (for len=%.1f i=%.1f/%.1f mem) dup %zu times (for len=%.1f)",
+//                 gFindItemCalls,
+//                 gAverageNumItems / (float)gFindItemCalls,
+//                 gAverageNumChecks / (float)gFindItemCalls,
+//                 gAverageNumMemChecks / (float)gFindItemCalls,
+//                 gDupCalls,
+//                 gAverageDupItems / (float)gDupCalls);
         gFindItemCalls = gDupCalls = 1;
         gAverageNumItems = gAverageNumChecks = gAverageNumMemChecks = gAverageDupItems = 0;
         gLastChecked = time;
@@ -347,7 +347,7 @@ bool AMessage::findRect(
 void AMessage::deliver() {
     sp<AHandler> handler = mHandler.promote();
     if (handler == NULL) {
-        ALOGW("failed to deliver message as target handler %d is gone.", mTarget);
+        //ALOGW("failed to deliver message as target handler %d is gone.", mTarget);
         return;
     }
 
@@ -357,7 +357,7 @@ void AMessage::deliver() {
 status_t AMessage::post(int64_t delayUs) {
     sp<ALooper> looper = mLooper.promote();
     if (looper == NULL) {
-        ALOGW("failed to post message as target looper for handler %d is gone.", mTarget);
+        //ALOGW("failed to post message as target looper for handler %d is gone.", mTarget);
         return -ENOENT;
     }
 
@@ -368,13 +368,13 @@ status_t AMessage::post(int64_t delayUs) {
 status_t AMessage::postAndAwaitResponse(sp<AMessage> *response) {
     sp<ALooper> looper = mLooper.promote();
     if (looper == NULL) {
-        ALOGW("failed to post message as target looper for handler %d is gone.", mTarget);
+        //ALOGW("failed to post message as target looper for handler %d is gone.", mTarget);
         return -ENOENT;
     }
 
     sp<AReplyToken> token = looper->createReplyToken();
     if (token == NULL) {
-        ALOGE("failed to create reply token");
+        //ALOGE("failed to create reply token");
         return -ENOMEM;
     }
     setObject("replyID", token);
@@ -385,12 +385,12 @@ status_t AMessage::postAndAwaitResponse(sp<AMessage> *response) {
 
 status_t AMessage::postReply(const sp<AReplyToken> &replyToken) {
     if (replyToken == NULL) {
-        ALOGW("failed to post reply to a NULL token");
+        //ALOGW("failed to post reply to a NULL token");
         return -ENOENT;
     }
     sp<ALooper> looper = replyToken->getLooper();
     if (looper == NULL) {
-        ALOGW("failed to post reply as target looper is gone.");
+        //ALOGW("failed to post reply as target looper is gone.");
         return -ENOENT;
     }
     return looper->postReply(replyToken, this);
@@ -602,7 +602,7 @@ sp<AMessage> AMessage::FromParcel(const Parcel &parcel) {
 
     msg->mNumItems = static_cast<size_t>(parcel.readInt32());
     if (msg->mNumItems > kMaxNumItems) {
-        ALOGE("Too large number of items clipped.");
+        //ALOGE("Too large number of items clipped.");
         msg->mNumItems = kMaxNumItems;
     }
 
@@ -654,8 +654,8 @@ sp<AMessage> AMessage::FromParcel(const Parcel &parcel) {
             {
                 const char *stringValue = parcel.readCString();
                 if (stringValue == NULL) {
-                    ALOGE("Failed reading string value from a parcel. "
-                        "Parsing aborted.");
+                    //ALOGE("Failed reading string value from a parcel. "
+                    //    "Parsing aborted.");
                     msg->mNumItems = i;
                     continue;
                     // The loop will terminate subsequently.
@@ -676,8 +676,8 @@ sp<AMessage> AMessage::FromParcel(const Parcel &parcel) {
 
             default:
             {
-                ALOGE("This type of object cannot cross process boundaries.");
-                TRESPASS();
+               // ALOGE("This type of object cannot cross process boundaries.");
+               // TRESPASS();
             }
         }
 
@@ -742,8 +742,8 @@ void AMessage::writeToParcel(Parcel *parcel) const {
 
             default:
             {
-                ALOGE("This type of object cannot cross process boundaries.");
-                TRESPASS();
+                //ALOGE("This type of object cannot cross process boundaries.");
+                //TRESPASS();
             }
         }
     }

@@ -599,7 +599,7 @@ status_t MPEG4Extractor::readMetaData() {
         } else if (offset <= orig_offset) {
             // only continue parsing if the offset was advanced,
             // otherwise we might end up in an infinite loop
-            ALOGE("did not advance: %lld->%lld", (long long)orig_offset, (long long)offset);
+            //ALOGE("did not advance: %lld->%lld", (long long)orig_offset, (long long)offset);
             err = ERROR_MALFORMED;
             break;
         } else if (err == UNKNOWN_ERROR) {
@@ -886,7 +886,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
                 chunk_size = (sourceSize - *offset);
             } else {
                 // XXX could we just pick a "sufficiently large" value here?
-                ALOGE("atom size is 0, and data source has no size");
+                //ALOGE("atom size is 0, and data source has no size");
                 return ERROR_MALFORMED;
             }
         } else {
@@ -896,7 +896,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
         }
     } else if (chunk_size < 8) {
         // The smallest valid chunk is 8 bytes long.
-        ALOGE("invalid chunk size: %" PRIu64, chunk_size);
+        //ALOGE("invalid chunk size: %" PRIu64, chunk_size);
         return ERROR_MALFORMED;
     }
 
@@ -928,7 +928,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
     if (chunk_type != FOURCC('m', 'd', 'a', 't') && chunk_data_size > kMaxAtomSize) {
         char errMsg[100];
         sprintf(errMsg, "%s atom has size %" PRId64, chunk, chunk_data_size);
-        ALOGE("%s (b/28615448)", errMsg);
+        //ALOGE("%s (b/28615448)", errMsg);
         android_errorWriteWithInfoLog(0x534e4554, "28615448", -1, errMsg, strlen(errMsg));
         return ERROR_MALFORMED;
     }
@@ -970,7 +970,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
         case FOURCC('e', 'd', 't', 's'):
         {
             if (chunk_type == FOURCC('m', 'o', 'o', 'v') && depth != 0) {
-                ALOGE("moov: depth %d", depth);
+                //ALOGE("moov: depth %d", depth);
                 return ERROR_MALFORMED;
             }
             if (chunk_type == FOURCC('m', 'o', 'o', 'f') && !mMoofFound) {
@@ -1002,7 +1002,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
             bool isTrack = false;
             if (chunk_type == FOURCC('t', 'r', 'a', 'k')) {
                 if (depth != 1) {
-                    ALOGE("trak: depth %d", depth);
+                    //ALOGE("trak: depth %d", depth);
                     return ERROR_MALFORMED;
                 }
                 isTrack = true;
@@ -1311,7 +1311,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
             }
 
             if (!timescale) {
-                ALOGE("timescale should not be ZERO.");
+                //ALOGE("timescale should not be ZERO.");
                 return ERROR_MALFORMED;
             }
 
@@ -1587,11 +1587,11 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
                 if (buffer[data_offset] & 0x1) {
                     mLastTrack->meta->setCString(
                             kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_EAC3_JOC);
-                    DLOGD("@DDP - flag_eac3_extension_type_a = 1 - Set EAC3/JOC mimetype");
+                    //DLOGD("@DDP - flag_eac3_extension_type_a = 1 - Set EAC3/JOC mimetype");
                 }
             }
             else if (chunk_data_size > (data_offset +1)){
-                ALOGE("@DDP - Invalid EC3SpecificBox extension data");
+                //ALOGE("@DDP - Invalid EC3SpecificBox extension data");
                 return ERROR_MALFORMED;
             }
             *offset += chunk_size;
@@ -1725,7 +1725,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
                 // have a 4 byte header (0x00 0x00 0x00 0x01) after conversion,
                 // and thus will grow by 2 bytes per chunk.
                 if (max_size > SIZE_MAX - 10 * 2) {
-                    ALOGE("max sample size too big: %zu", max_size);
+                    //ALOGE("max sample size too big: %zu", max_size);
                     return ERROR_MALFORMED;
                 }
                 mLastTrack->meta->setInt32(kKeyMaxInputSize, max_size + 10 * 2);
@@ -1734,7 +1734,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
                 uint32_t width, height;
                 if (!mLastTrack->meta->findInt32(kKeyWidth, (int32_t*)&width) ||
                     !mLastTrack->meta->findInt32(kKeyHeight,(int32_t*) &height)) {
-                    ALOGE("No width or height, assuming worst case 1080p");
+                    //ALOGE("No width or height, assuming worst case 1080p");
                     width = 1920;
                     height = 1080;
                 } else {
@@ -1742,7 +1742,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
                     // were chosen so that the calculations below don't cause overflows, they're
                     // not indicating that resolutions up to 32kx32k are actually supported.
                     if (width > 32768 || height > 32768) {
-                        ALOGE("can't support %u x %u video", width, height);
+                        //ALOGE("can't support %u x %u video", width, height);
                         return ERROR_MALFORMED;
                     }
                 }
@@ -1998,7 +1998,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
             char buffer[23];
             if (chunk_data_size != 7 &&
                 chunk_data_size != 23) {
-                ALOGE("Incorrect D263 box size %lld", (long long)chunk_data_size);
+                //ALOGE("Incorrect D263 box size %lld", (long long)chunk_data_size);
                 return ERROR_MALFORMED;
             }
 
@@ -2081,7 +2081,7 @@ status_t MPEG4Extractor::parseChunk(off64_t *offset, int depth) {
             *offset += chunk_size;
 
             if (depth != 1) {
-                ALOGE("mvhd: depth %d", depth);
+                //ALOGE("mvhd: depth %d", depth);
                 return ERROR_MALFORMED;
             }
             if (chunk_data_size < 32) {
@@ -2821,7 +2821,7 @@ status_t MPEG4Extractor::parseITunesMetaData(off64_t offset, size_t size) {
                     if (size < 8) {
                         delete[] buffer;
                         buffer = NULL;
-                        ALOGE("b/24346430");
+                        //ALOGE("b/24346430");
                         return ERROR_MALFORMED;
                     }
                     mLastCommentData.setTo((const char *)buffer + 8);
@@ -3106,7 +3106,7 @@ sp<MediaSource> MPEG4Extractor::getTrack(size_t index) {
             }
         }
     } else {
-        ALOGE("b/21657957");
+        //ALOGE("b/21657957");
         return NULL;
     }
 
@@ -3146,12 +3146,12 @@ status_t MPEG4Extractor::verifyTrack(Track *track) {
 
     if (track->sampleTable == NULL || !track->sampleTable->isValid()) {
         // Make sure we have all the metadata we need.
-        ALOGE("stbl atom missing/invalid.");
+        //ALOGE("stbl atom missing/invalid.");
         return ERROR_MALFORMED;
     }
 
     if (track->timescale == 0) {
-        ALOGE("timescale invalid.");
+        //ALOGE("timescale invalid.");
         return ERROR_MALFORMED;
     }
 
@@ -3558,8 +3558,8 @@ MPEG4Source::MPEG4Source(
         const uint8_t *ptr = (const uint8_t *)data;
 
         if (size < 7 || ptr[0] != 1) {
-            ALOGE("Invalid AVCC atom, size %zu, configurationVersion: %d",
-                    size, ptr[0]);
+            //ALOGE("Invalid AVCC atom, size %zu, configurationVersion: %d",
+            //        size, ptr[0]);
         } else {
             // The number of bytes used to encode the length of a NAL unit.
             mNALLengthSize = 1 + (ptr[4] & 3);
@@ -3614,7 +3614,7 @@ status_t MPEG4Source::start(MetaData *params) {
     // A somewhat arbitrary limit that should be sufficient for 8k video frames
     // If you see the message below for a valid input stream: increase the limit
     if (max_size > 64 * 1024 * 1024) {
-        ALOGE("bogus max input size: %zu", max_size);
+        //ALOGE("bogus max input size: %zu", max_size);
         return ERROR_MALFORMED;
     }
     mGroup = new MediaBufferGroup;
@@ -4359,7 +4359,7 @@ status_t MPEG4Source::read(
             return err;
         }
         if (size > mBuffer->size()) {
-            ALOGE("buffer too small: %zu > %zu", size, mBuffer->size());
+            //ALOGE("buffer too small: %zu > %zu", size, mBuffer->size());
             return ERROR_BUFFER_TOO_SMALL;
         }
     }
@@ -4412,11 +4412,11 @@ status_t MPEG4Source::read(
             (const uint8_t *)mBuffer->data() + mBuffer->range_offset();
 
         size_t nal_size = parseNALSize(src);
-        if (mNALLengthSize > SIZE_MAX - nal_size) {
-            ALOGE("b/24441553, b/24445122");
-        }
+        //if (mNALLengthSize > SIZE_MAX - nal_size) {
+        //    ALOGE("b/24441553, b/24445122");
+        //}
         if (mBuffer->range_length() - mNALLengthSize < nal_size) {
-            ALOGE("incomplete NAL unit.");
+            //ALOGE("incomplete NAL unit.");
 
             mBuffer->release();
             mBuffer = NULL;
@@ -4493,7 +4493,7 @@ status_t MPEG4Source::read(
                 if (dstOffset > SIZE_MAX - 4 ||
                         dstOffset + 4 > SIZE_MAX - nalLength ||
                         dstOffset + 4 + nalLength > mBuffer->size()) {
-                    ALOGE("b/27208621 : %zu %zu", dstOffset, mBuffer->size());
+                    //ALOGE("b/27208621 : %zu %zu", dstOffset, mBuffer->size());
                     android_errorWriteLog(0x534e4554, "27208621");
                     mBuffer->release();
                     mBuffer = NULL;
@@ -4634,7 +4634,7 @@ status_t MPEG4Source::fragmentedRead(
             return err;
         }
         if (size > mBuffer->size()) {
-            ALOGE("buffer too small: %zu > %zu", size, mBuffer->size());
+            //ALOGE("buffer too small: %zu > %zu", size, mBuffer->size());
             return ERROR_BUFFER_TOO_SMALL;
         }
     }
@@ -4660,7 +4660,7 @@ status_t MPEG4Source::fragmentedRead(
                 mBuffer->release();
                 mBuffer = NULL;
 
-                ALOGE("fragmentedRead ERROR_MALFORMED size %zu", size);
+                //ALOGE("fragmentedRead ERROR_MALFORMED size %zu", size);
                 return ERROR_MALFORMED;
             }
 
@@ -4710,12 +4710,12 @@ status_t MPEG4Source::fragmentedRead(
             (const uint8_t *)mBuffer->data() + mBuffer->range_offset();
 
         size_t nal_size = parseNALSize(src);
-        if (mNALLengthSize > SIZE_MAX - nal_size) {
-            ALOGE("b/24441553, b/24445122");
-        }
+        //if (mNALLengthSize > SIZE_MAX - nal_size) {
+        //    ALOGE("b/24441553, b/24445122");
+        //}
 
         if (mBuffer->range_length() - mNALLengthSize < nal_size) {
-            ALOGE("incomplete NAL unit.");
+            //ALOGE("incomplete NAL unit.");
 
             mBuffer->release();
             mBuffer = NULL;
@@ -4767,7 +4767,7 @@ status_t MPEG4Source::fragmentedRead(
         }
 
         if (isMalFormed || data == NULL) {
-            ALOGE("isMalFormed size %zu", size);
+            //ALOGE("isMalFormed size %zu", size);
             if (mBuffer != NULL) {
                 mBuffer->release();
                 mBuffer = NULL;
@@ -4805,7 +4805,7 @@ status_t MPEG4Source::fragmentedRead(
                 }
 
                 if (isMalFormed) {
-                    ALOGE("Video is malformed; nalLength %zu", nalLength);
+                    //ALOGE("Video is malformed; nalLength %zu", nalLength);
                     mBuffer->release();
                     mBuffer = NULL;
                     return ERROR_MALFORMED;
@@ -4818,7 +4818,7 @@ status_t MPEG4Source::fragmentedRead(
                 if (dstOffset > SIZE_MAX - 4 ||
                         dstOffset + 4 > SIZE_MAX - nalLength ||
                         dstOffset + 4 + nalLength > mBuffer->size()) {
-                    ALOGE("b/26365349 : %zu %zu", dstOffset, mBuffer->size());
+                    //ALOGE("b/26365349 : %zu %zu", dstOffset, mBuffer->size());
                     android_errorWriteLog(0x534e4554, "26365349");
                     mBuffer->release();
                     mBuffer = NULL;

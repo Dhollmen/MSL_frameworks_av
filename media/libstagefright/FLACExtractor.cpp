@@ -513,7 +513,7 @@ status_t FLACParser::init()
         case 24:
             break;
         default:
-            ALOGE("unsupported bits per sample %u", getBitsPerSample());
+            //ALOGE("unsupported bits per sample %u", getBitsPerSample());
             return NO_INIT;
         }
         // check sample rate
@@ -536,7 +536,7 @@ status_t FLACParser::init()
         case 192000:
             break;
         default:
-            ALOGE("unsupported sample rate %u", getSampleRate());
+            //ALOGE("unsupported sample rate %u", getSampleRate());
             return NO_INIT;
         }
         // populate track metadata
@@ -606,9 +606,9 @@ MediaBuffer *FLACParser::readBuffer(bool doSeek, FLAC__uint64 sample)
     if (mWriteHeader.sample_rate != getSampleRate() ||
         mWriteHeader.channels != getChannels() ||
         mWriteHeader.bits_per_sample != getBitsPerSample()) {
-        ALOGE("FLACParser::readBuffer write changed parameters mid-stream: %d/%d/%d -> %d/%d/%d",
-                getSampleRate(), getChannels(), getBitsPerSample(),
-                mWriteHeader.sample_rate, mWriteHeader.channels, mWriteHeader.bits_per_sample);
+        //ALOGE("FLACParser::readBuffer write changed parameters mid-stream: %d/%d/%d -> %d/%d/%d",
+        //        getSampleRate(), getChannels(), getBitsPerSample(),
+        //        mWriteHeader.sample_rate, mWriteHeader.channels, mWriteHeader.bits_per_sample);
         return NULL;
     }
     // acquire a media buffer

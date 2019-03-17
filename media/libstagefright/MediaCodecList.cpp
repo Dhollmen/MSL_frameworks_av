@@ -343,14 +343,14 @@ void MediaCodecList::parseXMLFile(const char *path) {
     while (mInitCheck == OK) {
         void *buff = ::XML_GetBuffer(parser, BUFF_SIZE);
         if (buff == NULL) {
-            ALOGE("failed in call to XML_GetBuffer()");
+            //ALOGE("failed in call to XML_GetBuffer()");
             mInitCheck = UNKNOWN_ERROR;
             break;
         }
 
         int bytes_read = ::fread(buff, 1, BUFF_SIZE, file);
         if (bytes_read < 0) {
-            ALOGE("failed in call to read");
+            //ALOGE("failed in call to read");
             mInitCheck = ERROR_IO;
             break;
         }
@@ -507,7 +507,7 @@ void MediaCodecList::startElementHandler(
             // ignore limits and features specified outside of type
             bool outside = !inType && !mCurrentInfo->mHasSoleMime;
             if (outside && (!strcmp(name, "Limit") || !strcmp(name, "Feature"))) {
-                ALOGW("ignoring %s specified outside of a Type", name);
+                //ALOGW("ignoring %s specified outside of a Type", name);
             } else if (!strcmp(name, "Limit")) {
                 mInitCheck = addLimit(attrs);
             } else if (!strcmp(name, "Feature")) {
@@ -651,7 +651,7 @@ void MediaCodecList::setCurrentCodecInfo(bool encoder, const char *name, const c
     for (size_t i = 0; i < mCodecInfos.size(); ++i) {
         if (AString(name) == mCodecInfos[i]->getCodecName()) {
             if (mCodecInfos[i]->getCapabilitiesFor(type) == NULL) {
-                ALOGW("Overrides with an unexpected mime %s", type);
+                //ALOGW("Overrides with an unexpected mime %s", type);
                 // Create a new MediaCodecInfo (but don't add it to mCodecInfos) to hold the
                 // overrides we don't want.
                 mCurrentInfo = new MediaCodecInfo(name, encoder, type);
@@ -886,19 +886,19 @@ ssize_t MediaCodecList::findCodecByType(
 }
 
 static status_t limitFoundMissingAttr(AString name, const char *attr, bool found = true) {
-    ALOGE("limit '%s' with %s'%s' attribute", name.c_str(),
-            (found ? "" : "no "), attr);
+    //ALOGE("limit '%s' with %s'%s' attribute", name.c_str(),
+    //        (found ? "" : "no "), attr);
     return -EINVAL;
 }
 
 static status_t limitError(AString name, const char *msg) {
-    ALOGE("limit '%s' %s", name.c_str(), msg);
+    //ALOGE("limit '%s' %s", name.c_str(), msg);
     return -EINVAL;
 }
 
 static status_t limitInvalidAttr(AString name, const char *attr, AString value) {
-    ALOGE("limit '%s' with invalid '%s' attribute (%s)", name.c_str(),
-            attr, value.c_str());
+    //ALOGE("limit '%s' with invalid '%s' attribute (%s)", name.c_str(),
+    //        attr, value.c_str());
     return -EINVAL;
 }
 
@@ -1041,8 +1041,8 @@ status_t MediaCodecList::addLimit(const char **attrs) {
             AString tag = name;
             tag.append("-ranges");
             mCurrentInfo->addDetail(tag, ranges);
-        } else {
-            ALOGW("Ignoring unrecognized limit '%s'", name.c_str());
+        //} else {
+        //    ALOGW("Ignoring unrecognized limit '%s'", name.c_str());
         }
     }
     return OK;

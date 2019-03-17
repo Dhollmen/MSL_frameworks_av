@@ -196,16 +196,16 @@ status_t WAVExtractor::init() {
             mNumChannels = U16_LE_AT(&formatSpec[2]);
 
             if (mNumChannels < 1 || mNumChannels > 8) {
-                ALOGE("Unsupported number of channels (%d)", mNumChannels);
+                //ALOGE("Unsupported number of channels (%d)", mNumChannels);
                 return ERROR_UNSUPPORTED;
             }
 
-            if (mWaveFormat != WAVE_FORMAT_EXTENSIBLE) {
-                if (mNumChannels != 1 && mNumChannels != 2) {
-                    ALOGW("More than 2 channels (%d) in non-WAVE_EXT, unknown channel mask",
-                            mNumChannels);
-                }
-            }
+//             if (mWaveFormat != WAVE_FORMAT_EXTENSIBLE) {
+//                 if (mNumChannels != 1 && mNumChannels != 2) {
+//                     ALOGW("More than 2 channels (%d) in non-WAVE_EXT, unknown channel mask",
+//                             mNumChannels);
+//                 }
+//             }
 
             mSampleRate = U32_LE_AT(&formatSpec[4]);
 
@@ -237,27 +237,27 @@ status_t WAVExtractor::init() {
                 uint16_t validBitsPerSample = U16_LE_AT(&formatSpec[18]);
                 if (validBitsPerSample != mBitsPerSample) {
                     if (validBitsPerSample != 0) {
-                        ALOGE("validBits(%d) != bitsPerSample(%d) are not supported",
-                                validBitsPerSample, mBitsPerSample);
+                        //ALOGE("validBits(%d) != bitsPerSample(%d) are not supported",
+                        //        validBitsPerSample, mBitsPerSample);
                         return ERROR_UNSUPPORTED;
-                    } else {
+                    //} else {
                         // we only support valitBitsPerSample == bitsPerSample but some WAV_EXT
                         // writers don't correctly set the valid bits value, and leave it at 0.
-                        ALOGW("WAVE_EXT has 0 valid bits per sample, ignoring");
+                    //    ALOGW("WAVE_EXT has 0 valid bits per sample, ignoring");
                     }
                 }
 
                 mChannelMask = U32_LE_AT(&formatSpec[20]);
                 ALOGV("numChannels=%d channelMask=0x%x", mNumChannels, mChannelMask);
                 if ((mChannelMask >> 18) != 0) {
-                    ALOGE("invalid channel mask 0x%x", mChannelMask);
+                    //ALOGE("invalid channel mask 0x%x", mChannelMask);
                     return ERROR_MALFORMED;
                 }
 
                 if ((mChannelMask != CHANNEL_MASK_USE_CHANNEL_ORDER)
                         && (popcount(mChannelMask) != mNumChannels)) {
-                    ALOGE("invalid number of channels (%d) in channel mask (0x%x)",
-                            popcount(mChannelMask), mChannelMask);
+                    //ALOGE("invalid number of channels (%d) in channel mask (0x%x)",
+                    //        popcount(mChannelMask), mChannelMask);
                     return ERROR_MALFORMED;
                 }
 
@@ -270,7 +270,7 @@ status_t WAVExtractor::init() {
                     return ERROR_UNSUPPORTED;
                 }
                 if (memcmp(&formatSpec[26], WAVEEXT_SUBFORMAT, 14)) {
-                    ALOGE("unsupported GUID");
+                    //ALOGE("unsupported GUID");
                     return ERROR_UNSUPPORTED;
                 }
             }

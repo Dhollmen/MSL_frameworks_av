@@ -555,7 +555,7 @@ status_t MP3Source::read(
 
         off64_t pos = mCurrentPos;
         if (!Resync(mDataSource, mFixedHeader, &pos, NULL, NULL)) {
-            ALOGE("Unable to resync. Signalling end of stream.");
+            //ALOGE("Unable to resync. Signalling end of stream.");
 
             buffer->release();
             buffer = NULL;
