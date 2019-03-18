@@ -373,7 +373,7 @@ void MetaData::dumpToLog() const {
         char cc[5];
         MakeFourCCString(key, cc);
         const typed_data &item = mItems.valueAt(i);
-        ALOGI("%s: %s", cc, item.asString().string());
+        //ALOGI("%s: %s", cc, item.asString().string());
     }
 }
 

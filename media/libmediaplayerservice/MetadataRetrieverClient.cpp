@@ -93,7 +93,7 @@ static sp<MediaMetadataRetrieverBase> createRetriever(player_type playerType)
         default:
             // TODO:
             // support for TEST_PLAYER
-            ALOGE("player type %d is not supported",  playerType);
+            //ALOGE("player type %d is not supported",  playerType);
             break;
     }
     if (p == NULL) {
@@ -148,7 +148,7 @@ status_t MetadataRetrieverClient::setDataSource(int fd, int64_t offset, int64_t 
     ALOGV("st_size = %" PRIu64 "", sb.st_size);
 
     if (offset >= sb.st_size) {
-        ALOGE("offset (%" PRId64 ") bigger than file size (%" PRIu64 ")", offset, sb.st_size);
+        //ALOGE("offset (%" PRId64 ") bigger than file size (%" PRIu64 ")", offset, sb.st_size);
         return BAD_VALUE;
     }
     if (offset + length > sb.st_size) {
@@ -202,13 +202,13 @@ sp<IMemory> MetadataRetrieverClient::getFrameAtTime(int64_t timeUs, int option)
     }
     VideoFrame *frame = mRetriever->getFrameAtTime(timeUs, option);
     if (frame == NULL) {
-        ALOGE("failed to capture a video frame");
+        //ALOGE("failed to capture a video frame");
         return NULL;
     }
     size_t size = sizeof(VideoFrame) + frame->mSize;
     sp<MemoryHeapBase> heap = new MemoryHeapBase(size, 0, "MetadataRetrieverClient");
     if (heap == NULL) {
-        ALOGE("failed to create MemoryDealer");
+        //ALOGE("failed to create MemoryDealer");
         delete frame;
         return NULL;
     }
@@ -244,13 +244,13 @@ sp<IMemory> MetadataRetrieverClient::extractAlbumArt()
     }
     MediaAlbumArt *albumArt = mRetriever->extractAlbumArt();
     if (albumArt == NULL) {
-        ALOGE("failed to extract an album art");
+        //ALOGE("failed to extract an album art");
         return NULL;
     }
     size_t size = sizeof(MediaAlbumArt) + albumArt->size();
     sp<MemoryHeapBase> heap = new MemoryHeapBase(size, 0, "MetadataRetrieverClient");
     if (heap == NULL) {
-        ALOGE("failed to create MemoryDealer object");
+        //ALOGE("failed to create MemoryDealer object");
         delete albumArt;
         return NULL;
     }
