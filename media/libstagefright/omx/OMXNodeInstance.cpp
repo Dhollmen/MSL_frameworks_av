@@ -40,6 +40,7 @@
 static const OMX_U32 kPortIndexInput = 0;
 static const OMX_U32 kPortIndexOutput = 1;
 
+#if 0
 #define CLOGW(fmt, ...) ALOGW("[%x:%s] " fmt, mNodeID, mName, ##__VA_ARGS__)
 
 #define CLOG_ERROR_IF(cond, fn, err, fmt, ...) \
@@ -66,6 +67,21 @@ static const OMX_U32 kPortIndexOutput = 1;
     CLOG_DEBUG_IF(DEBUG >= ADebug::kDebugAll, fn, fmt, ##__VA_ARGS__)
 #define CLOG_BUMPED_BUFFER(fn, fmt, ...) \
     CLOG_DEBUG_IF(DEBUG_BUMP >= ADebug::kDebugAll, fn, fmt, ##__VA_ARGS__)
+#else
+#define CLOGW(fmt, ...)
+#define CLOG_ERROR_IF(cond, fn, err, fmt, ...)
+#define CLOG_ERROR(fn, err, fmt, ...)
+#define CLOG_IF_ERROR(fn, err, fmt, ...)
+#define CLOGI_(level, fn, fmt, ...)
+#define CLOGD_(level, fn, fmt, ...)
+#define CLOG_LIFE(fn, fmt, ...)
+#define CLOG_STATE(fn, fmt, ...)
+#define CLOG_CONFIG(fn, fmt, ...)
+#define CLOG_INTERNAL(fn, fmt, ...)
+#define CLOG_DEBUG_IF(cond, fn, fmt, ...)
+#define CLOG_BUFFER(fn, fmt, ...)
+#define CLOG_BUMPED_BUFFER(fn, fmt, ...)
+#endif
 
 /* buffer formatting */
 #define BUFFER_FMT(port, fmt, ...) "%s:%u " fmt, portString(port), (port), ##__VA_ARGS__

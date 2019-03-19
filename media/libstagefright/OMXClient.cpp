@@ -425,18 +425,18 @@ status_t OMXClient::connect() {
     sp<IMediaPlayerService> service = interface_cast<IMediaPlayerService>(binder);
 
     if (service.get() == NULL) {
-        ALOGE("Cannot obtain IMediaPlayerService");
+        //ALOGE("Cannot obtain IMediaPlayerService");
         return NO_INIT;
     }
 
     mOMX = service->getOMX();
     if (mOMX.get() == NULL) {
-        ALOGE("Cannot obtain IOMX");
+        //ALOGE("Cannot obtain IOMX");
         return NO_INIT;
     }
 
     if (!mOMX->livesLocally(0 /* node */, getpid())) {
-        ALOGI("Using client-side OMX mux.");
+        //ALOGI("Using client-side OMX mux.");
         mOMX = new MuxOMX(mOMX);
     }
 

@@ -151,11 +151,17 @@ static sp<MediaSource> InstantiateSoftwareEncoder(
 
 #undef FACTORY_CREATE_ENCODER
 #undef FACTORY_REF
-
+#if 0
 #define CODEC_LOGI(x, ...) ALOGI("[%s] " x, mComponentName, ##__VA_ARGS__)
 #define CODEC_LOGV(x, ...) ALOGV("[%s] " x, mComponentName, ##__VA_ARGS__)
 #define CODEC_LOGW(x, ...) ALOGW("[%s] " x, mComponentName, ##__VA_ARGS__)
 #define CODEC_LOGE(x, ...) ALOGE("[%s] " x, mComponentName, ##__VA_ARGS__)
+#else
+#define CODEC_LOGI(x, ...)
+#define CODEC_LOGV(x, ...)
+#define CODEC_LOGW(x, ...)
+#define CODEC_LOGE(x, ...)
+#endif
 
 struct OMXCodecObserver : public BnOMXObserver {
     OMXCodecObserver() {
