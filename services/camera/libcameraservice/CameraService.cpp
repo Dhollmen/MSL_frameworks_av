@@ -571,7 +571,7 @@ status_t CameraService::getCameraCharacteristics(int cameraId,
          * - Convert cached CameraParameters into static CameraMetadata
          *   properties.
          */
-        ALOGI("%s: Switching to HAL1 shim implementation...", __FUNCTION__);
+        //ALOGI("%s: Switching to HAL1 shim implementation...", __FUNCTION__);
 
         if ((ret = generateShimMetadata(cameraId, cameraInfo)) != OK) {
             return ret;
@@ -608,8 +608,8 @@ int CameraService::getCameraPriorityFromProcState(int procState) {
     // Find the priority for the camera usage based on the process state.  Higher priority clients
     // win for evictions.
     if (procState < 0) {
-        ALOGE("%s: Received invalid process state %d from ActivityManagerService!", __FUNCTION__,
-                procState);
+        //ALOGE("%s: Received invalid process state %d from ActivityManagerService!", __FUNCTION__,
+        //        procState);
         return -1;
     }
     // Treat sleeping TOP processes the same as regular TOP processes, for
@@ -724,7 +724,7 @@ status_t CameraService::makeClient(const sp<CameraService>& cameraService,
                 *client = new CameraClient(cameraService, tmp, packageName, id, facing,
                         clientPid, clientUid, getpid(), legacyMode);
             } else { // Camera2 API route
-                ALOGW("Camera using old HAL version: %d", deviceVersion);
+                //ALOGW("Camera using old HAL version: %d", deviceVersion);
                 return -EOPNOTSUPP;
             }
             break;
@@ -747,7 +747,7 @@ status_t CameraService::makeClient(const sp<CameraService>& cameraService,
             break;
           default:
             // Should not be reachable
-            ALOGE("Unknown camera device HAL version: %d", deviceVersion);
+            //ALOGE("Unknown camera device HAL version: %d", deviceVersion);
             return INVALID_OPERATION;
         }
     } else {
@@ -761,9 +761,9 @@ status_t CameraService::makeClient(const sp<CameraService>& cameraService,
                     clientPid, clientUid, servicePid, legacyMode);
         } else {
             // Other combinations (e.g. HAL3.x open as HAL2.x) are not supported yet.
-            ALOGE("Invalid camera HAL version %x: HAL %x device can only be"
-                    " opened as HAL %x device", halVersion, deviceVersion,
-                    CAMERA_DEVICE_API_VERSION_1_0);
+            //ALOGE("Invalid camera HAL version %x: HAL %x device can only be"
+            //        " opened as HAL %x device", halVersion, deviceVersion,
+            //        CAMERA_DEVICE_API_VERSION_1_0);
             return INVALID_OPERATION;
         }
     }
@@ -794,7 +794,7 @@ status_t CameraService::initializeShimMetadata(int cameraId) {
     if ((ret = connectHelper<ICameraClient,Client>(sp<ICameraClient>{nullptr}, id,
             static_cast<int>(CAMERA_HAL_API_VERSION_UNSPECIFIED), internalPackageName, uid, API_1,
             false, true, tmp)) != NO_ERROR) {
-        ALOGE("%s: Error %d (%s) initializing shim metadata.", __FUNCTION__, ret, strerror(ret));
+        //ALOGE("%s: Error %d (%s) initializing shim metadata.", __FUNCTION__, ret, strerror(ret));
         return ret;
     }
     return NO_ERROR;
@@ -809,7 +809,7 @@ status_t CameraService::getLegacyParametersLazy(int cameraId,
     status_t ret = 0;
 
     if (parameters == NULL) {
-        ALOGE("%s: parameters must not be null", __FUNCTION__);
+        //ALOGE("%s: parameters must not be null", __FUNCTION__);
         return BAD_VALUE;
     }
 
@@ -987,11 +987,11 @@ status_t CameraService::handleEvictionsLocked(const String8& cameraId, int clien
                 auto clientSp = current->getValue();
                 if (clientSp.get() != nullptr) { // should never be needed
                     if (!clientSp->canCastToApiClient(effectiveApiLevel)) {
-                        ALOGW("CameraService connect called from same client, but with a different"
-                                " API level, evicting prior client...");
+                        //ALOGW("CameraService connect called from same client, but with a different"
+                        //        " API level, evicting prior client...");
                     } else if (clientSp->getRemote() == remoteCallback) {
-                        ALOGI("CameraService::connect X (PID %d) (second call from same"
-                                " app binder, returning the same client)", clientPid);
+                        //ALOGI("CameraService::connect X (PID %d) (second call from same"
+                        //        " app binder, returning the same client)", clientPid);
                         *client = clientSp;
                         return NO_ERROR;
                     }
@@ -1045,8 +1045,8 @@ status_t CameraService::handleEvictionsLocked(const String8& cameraId, int clien
         // If the incoming client was 'evicted,' higher priority clients have the camera in the
         // background, so we cannot do evictions
         if (std::find(evicted.begin(), evicted.end(), clientDescriptor) != evicted.end()) {
-            ALOGE("CameraService::connect X (PID %d) rejected (existing client(s) with higher"
-                    " priority).", clientPid);
+            //ALOGE("CameraService::connect X (PID %d) rejected (existing client(s) with higher"
+            //        " priority).", clientPid);
 
             sp<BasicClient> clientSp = clientDescriptor->getValue();
             String8 curTime = getFormattedCurrentTime();

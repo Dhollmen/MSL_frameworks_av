@@ -265,11 +265,11 @@ void AudioFlinger::onFirstRef()
         uint32_t int_val;
         if (1 == sscanf(val_str, "%u", &int_val)) {
             mStandbyTimeInNsecs = milliseconds(int_val);
-            ALOGI("Using %u mSec as standby time.", int_val);
+            //ALOGI("Using %u mSec as standby time.", int_val);
         } else {
             mStandbyTimeInNsecs = kDefaultStandbyTimeInNsecs;
-            ALOGI("Using default %u mSec as standby time.",
-                    (uint32_t)(mStandbyTimeInNsecs / 1000000));
+            //ALOGI("Using default %u mSec as standby time.",
+            //        (uint32_t)(mStandbyTimeInNsecs / 1000000));
         }
     }
 
@@ -1639,7 +1639,7 @@ audio_module_handle_t AudioFlinger::loadHwModule_l(const char *name)
 {
     for (size_t i = 0; i < mAudioHwDevs.size(); i++) {
         if (strncmp(mAudioHwDevs.valueAt(i)->moduleName(), name, strlen(name)) == 0) {
-            ALOGW("loadHwModule() module %s already loaded", name);
+            //ALOGW("loadHwModule() module %s already loaded", name);
             return mAudioHwDevs.keyAt(i);
         }
     }
@@ -1707,8 +1707,8 @@ audio_module_handle_t AudioFlinger::loadHwModule_l(const char *name)
     audio_module_handle_t handle = nextUniqueId();
     mAudioHwDevs.add(handle, new AudioHwDevice(handle, name, dev, flags));
 
-    ALOGI("loadHwModule() Loaded %s audio interface from %s (%s) handle %d",
-          name, dev->common.module->name, dev->common.module->id, handle);
+    //ALOGI("loadHwModule() Loaded %s audio interface from %s (%s) handle %d",
+    //      name, dev->common.module->name, dev->common.module->id, handle);
 
     return handle;
 
@@ -1802,7 +1802,7 @@ audio_hw_sync_t AudioFlinger::getAudioHwSyncForSession(audio_session_t sessionId
 status_t AudioFlinger::systemReady()
 {
     Mutex::Autolock _l(mLock);
-    ALOGI("%s", __FUNCTION__);
+    //ALOGI("%s", __FUNCTION__);
     if (mSystemReady) {
         ALOGW("%s called twice", __FUNCTION__);
         return NO_ERROR;
@@ -1921,13 +1921,13 @@ status_t AudioFlinger::openOutput(audio_module_handle_t module,
                                   uint32_t *latencyMs,
                                   audio_output_flags_t flags)
 {
-    ALOGI("openOutput(), module %d Device %x, SamplingRate %d, Format %#08x, Channels %x, flags %x",
-              module,
-              (devices != NULL) ? *devices : 0,
-              config->sample_rate,
-              config->format,
-              config->channel_mask,
-              flags);
+//     ALOGI("openOutput(), module %d Device %x, SamplingRate %d, Format %#08x, Channels %x, flags %x",
+//               module,
+//               (devices != NULL) ? *devices : 0,
+//               config->sample_rate,
+//               config->format,
+//               config->channel_mask,
+//               flags);
 
     if (*devices == AUDIO_DEVICE_NONE) {
         return BAD_VALUE;
@@ -1944,7 +1944,7 @@ status_t AudioFlinger::openOutput(audio_module_handle_t module,
 
         // the first primary output opened designates the primary hw device
         if ((mPrimaryHardwareDev == NULL) && (flags & AUDIO_OUTPUT_FLAG_PRIMARY)) {
-            ALOGI("Using module %d has the primary audio interface", module);
+            //ALOGI("Using module %d has the primary audio interface", module);
             mPrimaryHardwareDev = thread->getOutput()->audioHwDev;
 
             AutoMutex lock(mHardwareLock);
