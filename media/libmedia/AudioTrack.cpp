@@ -1031,7 +1031,7 @@ status_t AudioTrack::getPosition(uint32_t *position)
             uint32_t halFrames; // actually unused
             status_t status = AudioSystem::getRenderPosition(mOutput, &halFrames, &dspFrames);
             if (status != NO_ERROR) {
-                ALOGW("failed to getRenderPosition for offload session status %d", status);
+                //ALOGW("failed to getRenderPosition for offload session status %d", status);
                 return INVALID_OPERATION;
             }
         }
@@ -1215,8 +1215,8 @@ status_t AudioTrack::createTrack_l()
             (mTransfer == TRANSFER_OBTAIN)) &&
             // matching sample rate
             (mSampleRate == mAfSampleRate))) {
-        ALOGW("AUDIO_OUTPUT_FLAG_FAST denied by client; transfer %d, track %u Hz, output %u Hz",
-                mTransfer, mSampleRate, mAfSampleRate);
+        //ALOGW("AUDIO_OUTPUT_FLAG_FAST denied by client; transfer %d, track %u Hz, output %u Hz",
+        //        mTransfer, mSampleRate, mAfSampleRate);
         // once denied, do not request again if IAudioTrack is re-created
         mFlags = (audio_output_flags_t) (mFlags & ~AUDIO_OUTPUT_FLAG_FAST);
     }
@@ -1352,12 +1352,12 @@ status_t AudioTrack::createTrack_l()
     audio_track_cblk_t* cblk = static_cast<audio_track_cblk_t*>(iMemPointer);
     mCblk = cblk;
     // note that temp is the (possibly revised) value of frameCount
-    if (temp < frameCount || (frameCount == 0 && temp == 0)) {
+    //if (temp < frameCount || (frameCount == 0 && temp == 0)) {
         // In current design, AudioTrack client checks and ensures frame count validity before
         // passing it to AudioFlinger so AudioFlinger should not return a different value except
         // for fast track as it uses a special method of assigning frame count.
-        ALOGW("Requested frameCount %zu but received frameCount %zu", frameCount, temp);
-    }
+        //ALOGW("Requested frameCount %zu but received frameCount %zu", frameCount, temp);
+    //}
     frameCount = temp;
 
     mAwaitBoost = false;
@@ -1375,7 +1375,7 @@ status_t AudioTrack::createTrack_l()
         if (trackFlags & IAudioFlinger::TRACK_OFFLOAD) {
             ALOGV("AUDIO_OUTPUT_FLAG_OFFLOAD successful");
         } else {
-            ALOGW("AUDIO_OUTPUT_FLAG_OFFLOAD denied by server");
+            //ALOGW("AUDIO_OUTPUT_FLAG_OFFLOAD denied by server");
             mFlags = (audio_output_flags_t) (mFlags & ~AUDIO_OUTPUT_FLAG_COMPRESS_OFFLOAD);
             // FIXME This is a warning, not an error, so don't return error status
             //return NO_INIT;
@@ -1385,7 +1385,7 @@ status_t AudioTrack::createTrack_l()
         if (trackFlags & IAudioFlinger::TRACK_DIRECT) {
             ALOGV("AUDIO_OUTPUT_FLAG_DIRECT successful");
         } else {
-            ALOGW("AUDIO_OUTPUT_FLAG_DIRECT denied by server");
+            //ALOGW("AUDIO_OUTPUT_FLAG_DIRECT denied by server");
             mFlags = (audio_output_flags_t) (mFlags & ~AUDIO_OUTPUT_FLAG_DIRECT);
             // FIXME This is a warning, not an error, so don't return error status
             //return NO_INIT;
@@ -1612,7 +1612,7 @@ void AudioTrack::releaseBuffer(const Buffer* audioBuffer)
     if (mState == STATE_ACTIVE) {
         audio_track_cblk_t* cblk = mCblk;
         if (android_atomic_and(~CBLK_DISABLED, &cblk->mFlags) & CBLK_DISABLED) {
-            ALOGW("releaseBuffer() track %p disabled due to previous underrun, restarting", this);
+            //ALOGW("releaseBuffer() track %p disabled due to previous underrun, restarting", this);
             // FIXME ignoring status
             mAudioTrack->start();
         }
@@ -1724,7 +1724,7 @@ status_t TimedAudioTrack::queueTimedBuffer(const sp<IMemory>& buffer,
         if (buffer->size() != 0 && status == NO_ERROR &&
                 (mState == STATE_ACTIVE) && (cblk->mFlags & CBLK_DISABLED)) {
             android_atomic_and(~CBLK_DISABLED, &cblk->mFlags);
-            ALOGW("queueTimedBuffer() track %p disabled, restarting", this);
+            //ALOGW("queueTimedBuffer() track %p disabled, restarting", this);
             // FIXME ignoring status
             mAudioTrack->start();
         }
@@ -2140,8 +2140,8 @@ nsecs_t AudioTrack::processAudioBuffer()
 
 status_t AudioTrack::restoreTrack_l(const char *from)
 {
-    ALOGW("dead IAudioTrack, %s, creating a new one from %s()",
-          isOffloadedOrDirect_l() ? "Offloaded or Direct" : "PCM", from);
+    //ALOGW("dead IAudioTrack, %s, creating a new one from %s()",
+    //      isOffloadedOrDirect_l() ? "Offloaded or Direct" : "PCM", from);
     ++mSequence;
 
     // refresh the audio configuration cache in this process to make sure we get new
@@ -2191,7 +2191,7 @@ status_t AudioTrack::restoreTrack_l(const char *from)
         }
     }
     if (result != NO_ERROR) {
-        ALOGW("restoreTrack_l() failed status %d", result);
+        //ALOGW("restoreTrack_l() failed status %d", result);
         mState = STATE_STOPPED;
         mReleased = 0;
     }
@@ -2390,10 +2390,10 @@ status_t AudioTrack::getTimestamp(AudioTimestamp& timestamp)
             const uint64_t previousTimeNanos = TIME_TO_NANOS(mPreviousTimestamp.mTime);
             const uint64_t currentTimeNanos = TIME_TO_NANOS(timestamp.mTime);
 #undef TIME_TO_NANOS
-            if (currentTimeNanos < previousTimeNanos) {
-                ALOGW("retrograde timestamp time");
+            //if (currentTimeNanos < previousTimeNanos) {
+                //ALOGW("retrograde timestamp time");
                 // FIXME Consider blocking this from propagating upwards.
-            }
+            //}
 
             // Looking at signed delta will work even when the timestamps
             // are wrapping around.
@@ -2404,10 +2404,10 @@ status_t AudioTrack::getTimestamp(AudioTimestamp& timestamp)
             if (deltaPosition < 0) {
                 // Only report once per position instead of spamming the log.
                 if (!mRetrogradeMotionReported) {
-                    ALOGW("retrograde timestamp position corrected, %d = %u - %u",
-                            deltaPosition,
-                            timestamp.mPosition,
-                            mPreviousTimestamp.mPosition);
+                    //ALOGW("retrograde timestamp position corrected, %d = %u - %u",
+                    //        deltaPosition,
+                    //        timestamp.mPosition,
+                    //        mPreviousTimestamp.mPosition);
                     mRetrogradeMotionReported = true;
                 }
             } else {
@@ -2485,18 +2485,18 @@ uint32_t AudioTrack::getUnderrunFrames() const
 status_t AudioTrack::addAudioDeviceCallback(const sp<AudioSystem::AudioDeviceCallback>& callback)
 {
     if (callback == 0) {
-        ALOGW("%s adding NULL callback!", __FUNCTION__);
+        //ALOGW("%s adding NULL callback!", __FUNCTION__);
         return BAD_VALUE;
     }
     AutoMutex lock(mLock);
     if (mDeviceCallback == callback) {
-        ALOGW("%s adding same callback!", __FUNCTION__);
+        //ALOGW("%s adding same callback!", __FUNCTION__);
         return INVALID_OPERATION;
     }
     status_t status = NO_ERROR;
     if (mOutput != AUDIO_IO_HANDLE_NONE) {
         if (mDeviceCallback != 0) {
-            ALOGW("%s callback already present!", __FUNCTION__);
+            //ALOGW("%s callback already present!", __FUNCTION__);
             AudioSystem::removeAudioDeviceCallback(mDeviceCallback, mOutput);
         }
         status = AudioSystem::addAudioDeviceCallback(callback, mOutput);
@@ -2509,12 +2509,12 @@ status_t AudioTrack::removeAudioDeviceCallback(
         const sp<AudioSystem::AudioDeviceCallback>& callback)
 {
     if (callback == 0) {
-        ALOGW("%s removing NULL callback!", __FUNCTION__);
+        //ALOGW("%s removing NULL callback!", __FUNCTION__);
         return BAD_VALUE;
     }
     AutoMutex lock(mLock);
     if (mDeviceCallback != callback) {
-        ALOGW("%s removing different callback!", __FUNCTION__);
+        //ALOGW("%s removing different callback!", __FUNCTION__);
         return INVALID_OPERATION;
     }
     if (mOutput != AUDIO_IO_HANDLE_NONE) {

@@ -493,9 +493,9 @@ status_t AudioRecord::openRecord_l(size_t epoch, const String16& opPackageName)
     // Fast tracks must be at the primary _output_ [sic] sampling rate,
     // because there is currently no concept of a primary input sampling rate
     uint32_t afSampleRate = AudioSystem::getPrimaryOutputSamplingRate();
-    if (afSampleRate == 0) {
-        ALOGW("getPrimaryOutputSamplingRate failed");
-    }
+    //if (afSampleRate == 0) {
+    //    ALOGW("getPrimaryOutputSamplingRate failed");
+    //}
 
     // Client can only express a preference for FAST.  Server will perform additional tests.
     if ((mFlags & AUDIO_INPUT_FLAG_FAST) && !((
@@ -506,8 +506,8 @@ status_t AudioRecord::openRecord_l(size_t epoch, const String16& opPackageName)
             (mTransfer == TRANSFER_OBTAIN)) &&
             // matching sample rate
             (mSampleRate == afSampleRate))) {
-        ALOGW("AUDIO_INPUT_FLAG_FAST denied by client; transfer %d, track %u Hz, primary %u Hz",
-                mTransfer, mSampleRate, afSampleRate);
+        //ALOGW("AUDIO_INPUT_FLAG_FAST denied by client; transfer %d, track %u Hz, primary %u Hz",
+        //        mTransfer, mSampleRate, afSampleRate);
         // once denied, do not request again if IAudioRecord is re-created
         mFlags = (audio_input_flags_t) (mFlags & ~AUDIO_INPUT_FLAG_FAST);
     }
@@ -616,9 +616,9 @@ status_t AudioRecord::openRecord_l(size_t epoch, const String16& opPackageName)
 
     mCblk = cblk;
     // note that temp is the (possibly revised) value of frameCount
-    if (temp < frameCount || (frameCount == 0 && temp == 0)) {
-        ALOGW("Requested frameCount %zu but received frameCount %zu", frameCount, temp);
-    }
+    //if (temp < frameCount || (frameCount == 0 && temp == 0)) {
+    //    ALOGW("Requested frameCount %zu but received frameCount %zu", frameCount, temp);
+    //}
     frameCount = temp;
 
     mAwaitBoost = false;
@@ -1083,8 +1083,8 @@ nsecs_t AudioRecord::processAudioBuffer()
 
 status_t AudioRecord::restoreRecord_l(const char *from)
 {
-    ALOGW("dead IAudioRecord, creating a new one from %s()", from);
-    ++mSequence;
+    //ALOGW("dead IAudioRecord, creating a new one from %s()", from);
+    //++mSequence;
 
     // if the new IAudioRecord is created, openRecord_l() will modify the
     // following member variables: mAudioRecord, mCblkMemory, mCblk, mBufferMemory.
@@ -1100,7 +1100,7 @@ status_t AudioRecord::restoreRecord_l(const char *from)
         }
     }
     if (result != NO_ERROR) {
-        ALOGW("restoreRecord_l() failed status %d", result);
+        //ALOGW("restoreRecord_l() failed status %d", result);
         mActive = false;
     }
 
@@ -1110,18 +1110,18 @@ status_t AudioRecord::restoreRecord_l(const char *from)
 status_t AudioRecord::addAudioDeviceCallback(const sp<AudioSystem::AudioDeviceCallback>& callback)
 {
     if (callback == 0) {
-        ALOGW("%s adding NULL callback!", __FUNCTION__);
+        //ALOGW("%s adding NULL callback!", __FUNCTION__);
         return BAD_VALUE;
     }
     AutoMutex lock(mLock);
     if (mDeviceCallback == callback) {
-        ALOGW("%s adding same callback!", __FUNCTION__);
+        //ALOGW("%s adding same callback!", __FUNCTION__);
         return INVALID_OPERATION;
     }
     status_t status = NO_ERROR;
     if (mInput != AUDIO_IO_HANDLE_NONE) {
         if (mDeviceCallback != 0) {
-            ALOGW("%s callback already present!", __FUNCTION__);
+            //ALOGW("%s callback already present!", __FUNCTION__);
             AudioSystem::removeAudioDeviceCallback(mDeviceCallback, mInput);
         }
         status = AudioSystem::addAudioDeviceCallback(callback, mInput);
@@ -1134,12 +1134,12 @@ status_t AudioRecord::removeAudioDeviceCallback(
         const sp<AudioSystem::AudioDeviceCallback>& callback)
 {
     if (callback == 0) {
-        ALOGW("%s removing NULL callback!", __FUNCTION__);
+        //ALOGW("%s removing NULL callback!", __FUNCTION__);
         return BAD_VALUE;
     }
     AutoMutex lock(mLock);
     if (mDeviceCallback != callback) {
-        ALOGW("%s removing different callback!", __FUNCTION__);
+        //ALOGW("%s removing different callback!", __FUNCTION__);
         return INVALID_OPERATION;
     }
     if (mInput != AUDIO_IO_HANDLE_NONE) {
